@@ -8,4 +8,7 @@ Personal Website features the following pages:
 3. Resume
 5. Portfolio
 
+## Website Preview
+<img src='https://i.imgur.com/WBBPURZ.png' title='Website' width='' alt='Website' />
+
 This website was created in the 2025 STEP program at VSU
