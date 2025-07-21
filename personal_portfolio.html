@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Xavier Johnson's Student Portfolio</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #0b0c10;
+      color: #ffffff;
+    }
+    header, nav, footer {
+      background-color: #1f2833;
+      color: #66fcf1;
+      padding: 1rem;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 2px 10px rgba(255, 102, 0, 0.5);
+    }
+    nav a {
+      margin: 0 15px;
+      color: #66fcf1;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #ff6600;
+    }
+    .back-arrow {
+      position: absolute;
+      left: 1rem;
+      top: 1rem;
+      font-size: 1.5rem;
+      text-decoration: none;
+      color: #ff6600;
+      cursor: pointer;
+    }
+    .container {
+      padding: 2rem;
+      background-color: #1f2833;
+      border-radius: 8px;
+      margin: 2rem;
+      box-shadow: 0 0 20px rgba(102, 252, 241, 0.2);
+    }
+    .hidden {
+      display: none;
+    }
+    .footer-links a {
+      color: #66fcf1;
+      margin: 0 10px;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover {
+      color: #ff6600;
+    }
+    h1, h2 {
+      color: #ff6600;
+    }
+    a {
+      color: #45a29e;
+    }
+    .card {
+      background-color: #0b0c10;
+      padding: 1rem;
+      border: 2px solid #ff6600;
+      border-radius: 12px;
+      cursor: pointer;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(255, 102, 0, 0.3);
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(255, 102, 0, 0.5);
+    }
+    .tab-buttons button {
+      background-color: #0b0c10;
+      border: 2px solid #66fcf1;
+      color: #66fcf1;
+      padding: 0.5rem 1rem;
+      margin: 0.5rem;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+    .tab-buttons button:hover {
+      border-color: #ff6600;
+      color: #ff6600;
+    }
+    .research-content {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-left: 3px solid #66fcf1;
+      background-color: #0b0c10;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(102, 252, 241, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Welcome to Xavier Johnson's Portfolio</h1>
+    <span class="back-arrow" onclick="goBack()">&#8592;</span>
+  </header>
+
+  <nav>
+    <a href="#" onclick="showPage('home')">Home</a>
+    <a href="#" onclick="showPage('about')">About Me</a>
+    <a href="#" onclick="showPage('resume')">Resume</a>
+    <a href="#" onclick="showPage('portfolio')">Portfolio</a>
+  </nav>
+
+  <div class="container">
+    <div id="home">
+      <h2>Welcome</h2>
+      <p>Hello and welcome to my portfolio. Use the navigation above to explore more about me and my work!</p>
+    </div>
+
+    <div id="about" class="hidden">
+  <h2>About Me</h2>
+
+  <!-- Profile Picture Box -->
+  <div style="text-align: center; margin-bottom: 1rem;">
+    <img src="X Johnson Headshot.jpg" alt="Xavier Johnson" style="width: 180px; height: 180px; border-radius: 50%; border: 3px solid #66fcf1; object-fit: cover; box-shadow: 0 0 10px rgba(255, 102, 0, 0.4);">
+    <p style="margin-top: 0.5rem; font-size: 1.2rem; color: #66fcf1;"><strong>Meet the Creator</strong></p>
+  </div>
+
+  <p>I'm a dedicated computer science student attending Virginia State University. I have a strong interest in software development, cybersecurity, and artificial intelligence. I enjoy solving complex problems and building useful, user-friendly tools. In my free time, I contribute to open-source projects, compete in coding challenges, and explore new technologies.</p>
+</div>
+
+    <div id="resume" class="hidden">
+      <h2>Resume</h2>
+      <p>Download my <a href="Xavier Johnson's Resume.pdf">Resume (PDF)</a></p>
+    </div>
+
+    <div id="portfolio" class="hidden">
+      <h2>Portfolio</h2>
+      <div class="tab-buttons">
+        <button onclick="showPortfolioTab('projects')">Projects</button>
+        <button onclick="showPortfolioTab('research')">Research</button>
+      </div>
+
+      <!-- Projects Tab -->
+      <div id="projects-tab">
+        <p>Details of various coding and hardware projects I have completed or am working on.</p>
+        <div id="project-cards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+          <div class="card" onclick="showProjectDetail(1)">Vex IQ Robot</div>
+          <div class="card" onclick="showProjectDetail(2)">Raspberry Pi</div>
+          <div class="card" onclick="showProjectDetail(3)">Portfolio Website</div>
+          <div class="card" onclick="showProjectDetail(4)">Vex 1 Robot</div>
+          <div class="card" onclick="showProjectDetail(5)">Pirate Runner Game</div>
+        </div>
+      </div>
+
+      <!-- Research Tab -->
+      <div id="research-tab" class="hidden">
+        <h3>Research</h3>
+        <div class="tab-buttons">
+          <button onclick="showResearchContent('research1')">AI & Ethics</button>
+          <button onclick="showResearchContent('research2')">Cybersecurity Trends</button>
+          <button onclick="showResearchContent('research3')">Food Deserts</button>
+          <button onclick="showResearchContent('research4')">Cell Cultivation</button>
+          <button onclick="showResearchContent('research5')">Career AI</button>
+        </div>
+
+        <div id="research1" class="research-content">
+          <h4>AI & Ethics</h4>
+          <p>Exploring the ethical implications of artificial intelligence, including bias, fairness, and accountability in algorithmic decision-making.</p>
+        </div>
+        <div id="research2" class="research-content hidden">
+          <h4>Cybersecurity Trends</h4>
+          <p>Analyzing current trends in cybersecurity including zero trust architecture, cloud security, and ransomware threats.</p>
+        </div>
+        <div id="research3" class="research-content hidden">
+          <h4>Food Deserts</h4>
+          <p>Collaborated in a team of four to research the root causes of food deserts and developed a technology-driven solution aimed at improving access to healthy food in underserved communities.</p>
+        </div>
+        <div id="research4" class="research-content hidden">
+          <h4>Cell Cultivation</h4>
+          <p>Participated in a hands-on laboratory experience at BioBuilder in Boston, Massachusetts, through the Kappa League program, where I collaborated with peers to cultivate engineered cells intended for use in synthetic biology applications.</p>
+        </div>
+        <div id="research5" class="research-content hidden">
+        <h4>Career AI</h4>
+        <p>During the Thurgood Marshal College Fund Program called SOAR I created an idea with a team of four to create an AI that would sort through resumes for employers selecting the best ones out of the pool.</p>
+        <p><a href= "AI JOB APPLICATION READER.pdf" target="_blank">Our Research</a></p>
+        </div>
+      </div>
+
+      <!-- Project Details Sections -->
+      <div id="project-detail-1" class="hidden">
+        <h2>Project 1: Vex IQ Robot</h2>
+        <p>Built and programed a Vex IQ Robot to complete an obstical course.</p>
+      </div>
+      <div id="project-detail-2" class="hidden">
+        <h2>Project 2: Raspberry Pi</h2>
+        <p>Built and programed a small computer using a Raspberry Pi.</p>
+      </div>
+      <div id="project-detail-3" class="hidden">
+        <h2>Project 3: Portfolio Website</h2>
+        <p>This very portfolio site was designed with responsive layouts, custom JavaScript page logic, and modern styling.</p>
+      </div>
+      <div id="project-detail-4" class="hidden">
+        <h2>Project 4: Vex 1 Robot</h2>
+        <p>Built and programed a robot to pick up objects and move them a short distance.</p>
+      </div>
+      <div id="project-detail-5" class="hidden">
+        <h2>Project 5: Pirate Runner Game</h2>
+        <p>Built and programed a web game that plays like Subway Surfers about pirates.</p>
+        <p><a href= "pirate_runner_game.html" target="_blank">Try It!</a></p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Contact me:</p>
+    <div class="footer-links">
+      <p>Cell: (804) 835-8039</p>
+      <p>Email: xavier.q.j.07@gmail.com</p>
+      <a href="https://www.linkedin.com/in/xavier-johnson-212751372/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/Xavier-Q-Johnson" target="_blank">GitHub</a>
+    </div>
+  </footer>
+
+  <script>
+    let currentPage = 'home';
+    let previousPage = '';
+
+    function showPage(pageId) {
+      document.getElementById(currentPage).classList.add('hidden');
+      hideAllProjectDetails();
+      document.getElementById(pageId).classList.remove('hidden');
+      previousPage = currentPage;
+      currentPage = pageId;
+    }
+
+    function goBack() {
+      if (previousPage) {
+        showPage(previousPage);
+      }
+    }
+
+    function showProjectDetail(projectNum) {
+      hideAllProjectDetails();
+      document.getElementById(`project-detail-${projectNum}`).classList.remove('hidden');
+    }
+
+    function hideAllProjectDetails() {
+      for (let i = 1; i <= 7; i++) {
+        const detail = document.getElementById(`project-detail-${i}`);
+        if (detail) detail.classList.add('hidden');
+      }
+    }
+
+    function showPortfolioTab(tab) {
+      document.getElementById('projects-tab').classList.add('hidden');
+      document.getElementById('research-tab').classList.add('hidden');
+      document.getElementById(`${tab}-tab`).classList.remove('hidden');
+      hideAllProjectDetails();
+    }
+
+    function showResearchContent(tabId) {
+      const sections = document.querySelectorAll('.research-content');
+      sections.forEach(section => section.classList.add('hidden'));
+      document.getElementById(tabId).classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>

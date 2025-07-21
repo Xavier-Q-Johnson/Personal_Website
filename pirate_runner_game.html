@@ -1,0 +1,1205 @@
+<html lang="en"><head><script>(function(firebaseConfig, initialAuthToken, appId) {
+        window.__firebase_config = firebaseConfig;
+        window.__initial_auth_token = initialAuthToken;
+        window.__app_id = appId;
+            })("\n{\n  \"apiKey\": \"AIzaSyCqyCcs2R2e7AegGjvFAwG98wlamtbHvZY\",\n  \"authDomain\": \"bard-frontend.firebaseapp.com\",\n  \"projectId\": \"bard-frontend\",\n  \"storageBucket\": \"bard-frontend.firebasestorage.app\",\n  \"messagingSenderId\": \"175205271074\",\n  \"appId\": \"1:175205271074:web:2b7bd4d34d33bf38e6ec7b\"\n}\n","eyJhbGciOiJSUzI1NiIsImtpZCI6IjM3MTE1MjViZGZmNmM4YmM2NjM2NDE3ZjgwOGMzYzFlYTkyN2E0YmMiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BiYXJkLWZyb250ZW5kLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwiYXVkIjoiaHR0cHM6XC9cL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbVwvZ29vZ2xlLmlkZW50aXR5LmlkZW50aXR5dG9vbGtpdC52MS5JZGVudGl0eVRvb2xraXQiLCJ1aWQiOiIxMzkzNjMyMjcwOTU5NTc2ODM3MSIsImlzcyI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQGJhcmQtZnJvbnRlbmQuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCJjbGFpbXMiOnsiYXBwSWQiOiJjX2YyMzAzYTM4YzBiMTg2YTVfcGlyYXRlLXJ1bm5lci1nYW1lLTk3In0sImV4cCI6MTc1MTU3MTI5NSwiaWF0IjoxNzUxNTY3Njk1LCJhbGciOiJSUzI1NiJ9.GMQu67HqWLQlpxB1iunO77goPr-eZOlMDhRuP6y2jEKVyhjYsPgKbi4fxz0-X4zydvrbvg_xielj1OrC--vZmzU0V49dtiGCchbYu2Nx2W_lHeRvVTe_LIQxOi-0TIPYcDJ1Ntu9OVmcnklVOKlgx341YwXuxaJf_NgPTBFvD0vIwz9Nrpl0rUHYefUnNOuQVU-xjnVQVwT9YkOgxW9_rn7Dx8yYwMj7smWzzIbe87wBHcLKo2uyFgfF3zSaHMwYNlRSls8uQH3CUT_ju-e-e1ulvYyokIaa1iiosM0khbkzkc3cf-LCUfNaNvJ2X2jOQCthi3aQb-cuX6TDiipIzw","c_f2303a38c0b186a5_pirate-runner-game-97")</script><script>(function() {
+  // Ensure this script is executed only once
+  if (window.firebaseAuthBridgeScriptLoaded) {
+    return;
+  }
+  window.firebaseAuthBridgeScriptLoaded = true;
+
+  let nextTokenPromiseId = 0;
+
+  // Stores { resolve, reject } for ongoing token requests
+  const pendingTokenPromises = {};
+
+  // Listen for messages from the Host Application
+  window.addEventListener('message', function(event) {
+
+    const messageData = event.data;
+
+  if (messageData && messageData.type === 'RESOLVE_NEW_FIREBASE_TOKEN') {
+      const { success, token, error, promiseId } = messageData ?? {};
+      if (pendingTokenPromises[promiseId]) {
+        if (success) {
+          pendingTokenPromises[promiseId].resolve(token);
+        } else {
+          pendingTokenPromises[promiseId].reject(new Error(error || 'Token refresh failed from host.'));
+        }
+        delete pendingTokenPromises[promiseId];
+      }
+    }
+  });
+
+  // Expose a function for the Generated App to request a new Firebase token
+  window.requestNewFirebaseToken = function() {
+    const currentPromiseId = nextTokenPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingTokenPromises[currentPromiseId] = { resolve, reject };
+    });
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'REQUEST_NEW_FIREBASE_TOKEN',
+        promiseId: currentPromiseId
+      }, '*');
+    } else {
+      pendingTokenPromises[currentPromiseId].reject(new Error('No parent window to request token from.'));
+      delete pendingTokenPromises[currentPromiseId];
+    }
+    return promise;
+  };
+})();</script><script>
+let realOriginalGetUserMedia = null;
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  realOriginalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+}
+
+(function() {
+  if (navigator.mediaDevices && navigator.mediaDevices.__proto__) {
+    try {
+      Object.defineProperty(navigator.mediaDevices.__proto__, 'getUserMedia', {
+        get: function() {
+          return undefined; // Or throw an error
+        },
+        configurable: false
+      });
+    } catch (error) {
+      console.error("Error defining prototype getter:", error);
+    }
+  }
+})();
+
+(function() {
+  const pendingMediaResolvers = {};
+  let nextMediaPromiseId = 0;
+
+  function requestMediaPermissions(constraints) {
+    const mediaPromiseId = nextMediaPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingMediaResolvers[mediaPromiseId] = (granted) => {
+        delete pendingMediaResolvers[mediaPromiseId];
+        resolve(granted);
+      };
+    });
+
+    window.parent.postMessage({
+      type: 'requestMediaPermission',
+      constraints: constraints,
+      promiseId: mediaPromiseId,
+    }, '*');
+
+    return promise;
+  }
+
+  let originalGetUserMedia = realOriginalGetUserMedia;
+
+  function interceptGetUserMedia() {
+    if (navigator.mediaDevices) {
+      Object.defineProperty(navigator.mediaDevices, 'getUserMedia', {
+        value: function(constraints) {
+          return requestMediaPermissions(constraints).then((granted) => {
+            if (granted) {
+              if (originalGetUserMedia) {
+                return originalGetUserMedia(constraints);
+              } else {
+                throw new Error("Original getUserMedia not available.");
+              }
+            } else {
+              throw new DOMException('Permission denied', 'NotAllowedError');
+            }
+          });
+        },
+        writable: false,
+        configurable: false
+      });
+    }
+  }
+
+  interceptGetUserMedia();
+
+  const observer = new MutationObserver(function(mutationsList, observer) {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'reconfigured' && mutation.name === 'getUserMedia' && mutation.object === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'attributes' && mutation.attributeName === 'getUserMedia' && mutation.target === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'childList' && mutation.addedNodes) {
+        mutation.addedNodes.forEach(node => {
+          if (node === navigator.mediaDevices) {
+            interceptGetUserMedia();
+          }
+        });
+      }
+    }
+  });
+
+  function interceptSpeechRecognition() {
+    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+      return;
+    }
+
+    const OriginalSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    const SpeechRecognitionWrapper = function(...args) {
+      const recognizer = new OriginalSpeechRecognition(...args);
+      const originalStart = recognizer.start.bind(recognizer);
+
+      recognizer.start = function() {
+        requestMediaPermissions({ audio: true }).then(granted => {
+          if (granted) {
+            originalStart();
+          } else {
+            const errorEvent = new SpeechRecognitionErrorEvent('error');
+            errorEvent.error = 'not-allowed'; // This is the standard error for permission denial.
+            recognizer.dispatchEvent(errorEvent);
+          }
+        });
+      };
+
+      return recognizer;
+    };
+
+    SpeechRecognitionWrapper.prototype = OriginalSpeechRecognition.prototype;
+    SpeechRecognitionWrapper.prototype.constructor = SpeechRecognitionWrapper;
+
+    if (window.SpeechRecognition) {
+      window.SpeechRecognition = SpeechRecognitionWrapper;
+    }
+    if (window.webkitSpeechRecognition) {
+      window.webkitSpeechRecognition = SpeechRecognitionWrapper;
+    }
+  }
+
+  interceptSpeechRecognition();
+
+  window.addEventListener('message', function(event) {
+    if (event.data) {
+      if (event.data.type === 'resolveMediaPermission') {
+        const { promiseId, granted } = event.data;
+        if (pendingMediaResolvers[promiseId]) {
+          pendingMediaResolvers[promiseId](granted);
+        }
+      }
+    }
+  });
+
+})();</script><script>(function() {
+  const originalConsoleLog = console.log;
+  const originalConsoleError = console.error;
+
+    /**
+   * Normalizes an error event or a promise rejection reason into a structured error object.
+   * @param {*} errorEventOrReason The error object or reason.
+   * @return {object} Structured error data { message, name, stack }.
+   */
+  function getErrorObject(errorEventOrReason) {
+    if (errorEventOrReason instanceof Error) {
+      return {
+        message: errorEventOrReason.message,
+        name: errorEventOrReason.name,
+        stack: errorEventOrReason.stack,
+      };
+    }
+    // Fallback for non-Error objects.
+    try {
+      return {
+        message: JSON.stringify(errorEventOrReason),
+        name: 'UnknownErrorType',
+        stack: null,
+      };
+    } catch (e) {
+      return {
+        message: String(errorEventOrReason),
+        name: 'UnknownErrorTypeNonStringifiable',
+        stack: null,
+      };
+    }
+  }
+
+  /**
+   * Converts an array of arguments (from log/error) into a single string.
+   * Handles Error objects specially to include their message and stack.
+   * @param {Array<*>} args - Arguments passed to console methods.
+   * @return {string} A string representation of the arguments.
+   */
+  function stringifyArgs(args) {
+    return args
+      .map((arg) => {
+        if (arg instanceof Error) {
+          const {message, stack} = arg;
+          return `Error: ${message}${stack ? ('\nStack: ' + stack) : ''}`;
+        }
+        if (typeof arg === 'object' && arg !== null) {
+          try {
+            return JSON.stringify(arg);
+          } catch (error) {
+            return '[Circular Object]';
+          }
+        } else {
+          return String(arg);
+        }
+      })
+      .join(' ');
+  }
+
+  console.log = function(...args) {
+    const logString = stringifyArgs(args);
+    window.parent.postMessage({ type: 'log', message: logString }, '*');
+    originalConsoleLog.apply(console, args);
+  };
+
+  console.error = function(...args) {
+    let errorData;
+    if (args.length > 0 && args[0] instanceof Error) {
+      const err = args[0];
+      // If the first arg is an Error, capture its details.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        ...getErrorObject(err),
+        rawArgsString: stringifyArgs(args.slice(1)),
+        timestamp: new Date().toISOString(),
+      };
+    } else {
+      // If not an Error object, treat all args as a general error message.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        message: stringifyArgs(args),
+        name: 'ConsoleLoggedError',
+        stack: null,
+        timestamp: new Date().toISOString(),
+      };
+    }
+    window.parent.postMessage(errorData, '*');
+    originalConsoleError.apply(console, args);
+  };
+
+  // Listen for global unhandled synchronous errors.
+  window.addEventListener('error', function(event) {
+    const errorDetails = event.error ? getErrorObject(event.error) : {
+      message: event.message,
+      name: 'GlobalError',
+      stack: null,
+      filename: event.filename,
+      lineno: event.lineno,
+      colno: event.colno,
+    };
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'global',
+      ...errorDetails,
+      message: errorDetails.message || event.message,
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+  // Listen for unhandled promise rejections (asynchronous errors).
+  window.addEventListener('unhandledrejection', function(event) {
+    const errorDetails = getErrorObject(event.reason);
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'unhandledrejection',
+      ...errorDetails,
+      message: errorDetails.message || 'Unhandled Promise Rejection',
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+})();</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pirate Runner</title>
+    <!-- Tailwind CSS for basic styling and responsiveness -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js for 3D rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" crossorigin="anonymous"></script>
+    <!-- Tone.js for audio synthesis -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c; /* Dark background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Prevent scrollbars */
+        }
+        canvas {
+            display: block;
+            background-color: #000; /* Black background for canvas */
+            border-radius: 1rem; /* Rounded corners */
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); /* Glowing effect */
+        }
+        #game-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 800px; /* Max width for larger screens */
+            padding: 1rem;
+        }
+        #ui-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            pointer-events: none; /* Allow clicks to pass through to canvas */
+            z-index: 10;
+        }
+        #score-display {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            z-index: 11;
+        }
+        #message-box {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+            pointer-events: auto; /* Re-enable pointer events for the box */
+            display: none; /* Hidden by default */
+        }
+        #message-box h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #00ffff; /* Cyan for headings */
+        }
+        #message-box p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+        #message-box button {
+            background: linear-gradient(45deg, #00ffff, #007bff); /* Gradient button */
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 10px rgba(0, 255, 255, 0.4);
+            margin: 0.5rem; /* Add margin for spacing between buttons */
+        }
+        #message-box button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 255, 255, 0.6);
+        }
+        #instructions {
+            margin-top: 1rem;
+            font-size: 1rem;
+            color: #ccc;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            z-index: 11;
+        }
+        #high-score-display {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffcc00; /* Gold color for high score */
+            margin-top: 1rem;
+        }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.mt-4{margin-top:1rem}.rounded-2xl{border-radius:1rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.font-bold{font-weight:700}.text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity, 1))}.text-cyan-400{--tw-text-opacity:1;color:rgb(34 211 238 / var(--tw-text-opacity, 1))}</style></head>
+<body>
+    <div id="game-container">
+        <div id="score-display" style="display: none;">Score: 5139</div>
+        <canvas id="gameCanvas" width="650" height="358" style="width: 650.4px; height: 358.4px;"></canvas>
+        <div id="ui-overlay">
+            <div id="message-box" class="rounded-2xl" style="display: block;">
+                <h2 class="font-bold">Game Over!</h2>
+                <p id="game-message">Your final score: <span class="font-bold text-cyan-400">5139</span><br>Congratulations!</p>
+                <p id="high-score-display" style="display: none;">NEW High Score: 5139!</p>
+                <p><strong>Controls:</strong></p>
+                <p>A / ← : Move Left</p>
+                <p>D / → : Move Right</p>
+                <p>W / ↑ : Jump</p>
+                <p>S / ↓ : Slide</p>
+                <p class="text-sm mt-4 text-gray-400">Music will play when the game starts!</p>
+                <button id="startButton">Play Again</button>
+                <button id="downloadButton">Download Game</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // --- Global Variables ---
+        let scene, camera, renderer;
+        let player;
+        let obstacles = [];
+        let collectibles = [];
+        let gameSpeed = 0.15; // Initial game speed
+        const laneWidth = 3; // Width of each lane
+        const numberOfLanes = 3;
+        const playerLanePositions = [-laneWidth, 0, laneWidth]; // X positions for lanes
+        let currentLane = 1; // Start in middle lane (index 1)
+        let score = 0;
+        let highScore = 0; // New: High score variable
+        let gameOver = true;
+        let paused = false; // New: Pause state
+        let jumpState = { isJumping: false, initialY: 0, jumpHeight: 2, jumpSpeed: 0.05, currentJumpVelocity: 0 };
+        let slideState = { isSliding: false, initialScaleY: 1, slideScaleY: 0.5, slideDuration: 500, slideTimer: 0 };
+        let lastObstacleZ = -50; // Keep track of the last obstacle's Z position to space them out
+        const obstacleSpawnInterval = 15; // How far apart obstacles spawn on average
+        const collectibleSpawnChance = 0.5; // Chance to spawn a collectible with an obstacle
+        const maxObstacles = 10; // Max number of obstacles in the scene (soft limit for continuous flow)
+
+        let waves; // Reference to the waves mesh for animation
+        let sun; // Reference to the sun mesh
+        let clouds = []; // Array to hold cloud meshes
+        const cloudSpawnDistance = 30; // How far ahead clouds spawn
+        const maxClouds = 5; // Max number of clouds in the scene
+
+        let obstaclesRemovedThisFrame = 0; // Counter for obstacles removed to trigger new spawns
+
+        // Tone.js variables for music
+        let accordionSynth;
+        let musicLoop;
+
+        // UI Elements
+        const scoreDisplay = document.getElementById('score-display');
+        const messageBox = document.getElementById('message-box');
+        const startButton = document.getElementById('startButton');
+        const downloadButton = document.getElementById('downloadButton');
+        const highScoreDisplay = document.getElementById('high-score-display'); // New: High score display element
+        const gameMessage = document.getElementById('game-message'); // Reference to the main message paragraph
+
+        // --- Game Initialization ---
+        function init() {
+            // Set up scene, camera, renderer
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ canvas: gameCanvas, antialias: true });
+            renderer.setSize(window.innerWidth * 0.8, window.innerHeight * 0.8); // 80% of window size
+            renderer.setPixelRatio(window.devicePixelRatio); // For sharper rendering on high-DPI screens
+
+            // Adjust canvas size on window resize
+            window.addEventListener('resize', onWindowResize, false);
+
+            // Set camera position
+            camera.position.set(0, 3, 10); // Look down the "road"
+            camera.lookAt(0, 0, 0);
+
+            // Add ambient light
+            const ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
+            scene.add(ambientLight);
+
+            // Add directional light (for sun)
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(0, 20, -50); // Position high and slightly behind for sun effect
+            scene.add(directionalLight);
+
+            // Create the player
+            const playerGeometry = new THREE.BoxGeometry(0.8, 1.5, 0.8); // Pirate body
+            const playerMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000 }); // Red pirate
+            player = new THREE.Mesh(playerGeometry, playerMaterial);
+            player.position.set(playerLanePositions[currentLane], 0.75, 5); // Start in middle lane, slightly above ground
+            player.castShadow = true;
+            scene.add(player);
+
+            // Create the water lanes (ground)
+            const waterGeometry = new THREE.PlaneGeometry(laneWidth * numberOfLanes + 2, 200); // Wide and long plane
+            const waterMaterial = new THREE.MeshPhongMaterial({ color: 0x0077be, side: THREE.DoubleSide }); // Blue water
+            const water = new THREE.Mesh(waterGeometry, waterMaterial);
+            water.rotation.x = -Math.PI / 2; // Rotate to lie flat
+            water.position.y = 0; // Ground level
+            water.receiveShadow = true;
+            scene.add(water);
+
+            // Add waves to the water
+            const waveGeometry = new THREE.PlaneGeometry(laneWidth * numberOfLanes + 2, 200, 20, 200); // More segments for waves
+            const waveMaterial = new THREE.MeshPhongMaterial({ color: 0x0099ff, transparent: true, opacity: 0.4, side: THREE.DoubleSide });
+            waves = new THREE.Mesh(waveGeometry, waveMaterial);
+            waves.rotation.x = -Math.PI / 2;
+            waves.position.y = 0.05; // Slightly above the main water plane
+            scene.add(waves);
+
+            // Create the sky
+            const skyGeometry = new THREE.SphereGeometry(500, 32, 32); // Large sphere for skybox
+            const skyMaterial = new THREE.MeshBasicMaterial({ color: 0x87CEEB, side: THREE.BackSide }); // Light blue sky
+            const sky = new THREE.Mesh(skyGeometry, skyMaterial);
+            scene.add(sky);
+
+            // Create the sun
+            const sunGeometry = new THREE.SphereGeometry(5, 32, 32);
+            const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xFDB813 }); // Yellow/Orange sun
+            sun = new THREE.Mesh(sunGeometry, sunMaterial);
+            sun.position.set(0, 100, -200); // Position the sun high in the distance
+            scene.add(sun);
+
+            // Initialize Tone.js synth for accordion sound
+            accordionSynth = new Tone.PolySynth(Tone.Synth, {
+                oscillator: {
+                    type: "sawtooth" // Sawtooth wave for a buzzy, accordion-like sound
+                },
+                envelope: {
+                    attack: 0.02,
+                    decay: 0.5,
+                    sustain: 0.8,
+                    release: 0.5
+                },
+                volume: -10 // Adjust volume
+            }).toDestination();
+
+            // Define a simple accordion melody loop
+            const notes = ["C3", "E3", "G3", "C4", "G3", "E3"];
+            musicLoop = new Tone.Sequence((time, note) => {
+                accordionSynth.triggerAttackRelease(note, "8n", time);
+            }, notes, "4n"); // Play each note for an 8th note, sequence advances every quarter note
+
+            musicLoop.loop = true; // Loop the melody
+            Tone.Transport.bpm.value = 100; // Set tempo
+
+            // Load high score from local storage
+            highScore = parseInt(localStorage.getItem('pirateRunnerHighScore') || '0');
+            highScoreDisplay.textContent = `High Score: ${highScore}`;
+
+            // Initial UI state
+            scoreDisplay.style.display = 'none';
+            messageBox.style.display = 'block';
+
+            // Start button listener
+            startButton.addEventListener('click', startGame);
+            // Download button listener
+            downloadButton.addEventListener('click', downloadGame);
+
+            // Keyboard controls
+            document.addEventListener('keydown', onKeyDown);
+        }
+
+        // --- Game State Management ---
+        async function startGame() {
+            gameOver = false;
+            paused = false; // Ensure game is not paused when starting
+            score = 0;
+            gameSpeed = 0.15;
+            scoreDisplay.textContent = 'Score: 0';
+            scoreDisplay.style.display = 'block';
+            messageBox.style.display = 'none';
+
+            // Start Tone.js audio context (required for web audio)
+            await Tone.start();
+            console.log("Audio context started");
+            musicLoop.start(0); // Start the music loop from the beginning
+            Tone.Transport.start(); // Start the Tone.js transport
+
+            // Reset player position
+            player.position.set(playerLanePositions[1], 0.75, 5);
+            currentLane = 1;
+            jumpState = { isJumping: false, initialY: 0.75, jumpHeight: 2, jumpSpeed: 0.05, currentJumpVelocity: 0 };
+            slideState = { isSliding: false, initialScaleY: 1, slideScaleY: 0.5, slideDuration: 500, slideTimer: 0 };
+            player.scale.y = 1; // Reset scale
+
+            // Clear existing obstacles and collectibles
+            obstacles.forEach(obj => scene.remove(obj));
+            obstacles = [];
+            collectibles.forEach(obj => scene.remove(obj));
+            collectibles = [];
+            obstaclesRemovedThisFrame = 0; // Reset counter
+
+            // Clear existing clouds
+            clouds.forEach(cloud => scene.remove(cloud));
+            clouds = [];
+
+            // --- Initial obstacle spawn: 2 obstacles ---
+            let initialSpawnZ = camera.position.z - 50; // Start spawning well ahead of the camera
+            for (let i = 0; i < 2; i++) {
+                const randomLane = Math.floor(Math.random() * numberOfLanes);
+                const obstacleTypes = ['marine', 'boat', 'shark', 'shipwreck', 'rock'];
+                const randomType = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
+                createObstacle(randomType, randomLane, initialSpawnZ - (i * obstacleSpawnInterval * 1.5)); // Space them out
+            }
+
+
+            // Start the game loop
+            animate();
+        }
+
+        function endGame() {
+            gameOver = true;
+            paused = false; // Ensure game is not paused when ending
+            messageBox.style.display = 'block';
+            scoreDisplay.style.display = 'none';
+
+            // Check and update high score
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('pirateRunnerHighScore', highScore.toString());
+                highScoreDisplay.textContent = `NEW High Score: ${highScore}!`; // Indicate new high score
+                gameMessage.innerHTML = `Your final score: <span class="font-bold text-cyan-400">${score}</span><br>Congratulations!`;
+            } else {
+                highScoreDisplay.textContent = `High Score: ${highScore}`; // Show existing high score
+                gameMessage.innerHTML = `Your final score: <span class="font-bold text-cyan-400">${score}</span><br>Press "Start Game" to play again.`;
+            }
+
+            messageBox.querySelector('h2').textContent = 'Game Over!';
+            startButton.textContent = 'Play Again';
+
+            // Stop the music when the game ends
+            musicLoop.stop();
+            Tone.Transport.stop();
+        }
+
+        function togglePause() {
+            if (gameOver) return; // Cannot pause if game is over
+
+            paused = !paused;
+
+            if (paused) {
+                // Pause the game
+                Tone.Transport.pause(); // Pause music
+                messageBox.querySelector('h2').textContent = 'Game Paused';
+                gameMessage.textContent = 'Press Escape or Resume to continue.';
+                highScoreDisplay.style.display = 'none'; // Hide high score when paused
+                startButton.textContent = 'Resume Game';
+                messageBox.style.display = 'block';
+                scoreDisplay.style.display = 'none';
+            } else {
+                // Resume the game
+                Tone.Transport.start(); // Resume music
+                messageBox.style.display = 'none';
+                scoreDisplay.style.display = 'block';
+                // Restart animation loop
+                animate();
+            }
+        }
+
+        // --- Player Actions ---
+        function movePlayer(direction) {
+            if (gameOver || paused) return; // Cannot move if game is over or paused
+
+            let newLane = currentLane + direction;
+            if (newLane >= 0 && newLane < numberOfLanes) {
+                currentLane = newLane;
+                // Animate player movement to new lane
+                new TWEEN.Tween(player.position)
+                    .to({ x: playerLanePositions[currentLane] }, 150) // 150ms transition
+                    .easing(TWEEN.Easing.Quadratic.Out)
+                    .start();
+            }
+        }
+
+        function jump() {
+            if (gameOver || paused || jumpState.isJumping || slideState.isSliding) return; // Cannot jump if game is over or paused
+            jumpState.isJumping = true;
+            jumpState.currentJumpVelocity = jumpState.jumpSpeed; // Initial upward velocity
+        }
+
+        function slide() {
+            if (gameOver || paused || jumpState.isJumping || slideState.isSliding) return; // Cannot slide if game is over or paused
+            slideState.isSliding = true;
+            slideState.slideTimer = Date.now();
+            player.scale.y = slideState.slideScaleY; // Shrink player
+            player.position.y = slideState.slideScaleY * jumpState.initialY; // Adjust position to stay on ground
+        }
+
+        // --- Obstacle/Collectible Generation ---
+        // Modified to accept a specific Z position for spawning
+        function createObstacle(type, lane, zPosition) {
+            let geometry, material, height, width, depth, yOffset;
+            let obstacleMesh;
+
+            switch (type) {
+                case 'marine':
+                    geometry = new THREE.BoxGeometry(0.8, 1.8, 0.8);
+                    material = new THREE.MeshPhongMaterial({ color: 0x0000ff }); // Blue marine
+                    height = 1.8;
+                    yOffset = height / 2;
+                    obstacleMesh = new THREE.Mesh(geometry, material);
+                    break;
+                case 'boat':
+                    geometry = new THREE.BoxGeometry(laneWidth * 0.8, 0.5, 2);
+                    material = new THREE.MeshPhongMaterial({ color: 0x8B4513 }); // Brown boat
+                    height = 0.5;
+                    yOffset = height / 2;
+                    obstacleMesh = new THREE.Mesh(geometry, material);
+                    break;
+                case 'shark':
+                    // Simple shark fin shape, now light blue
+                    geometry = new THREE.ConeGeometry(0.5, 1, 8);
+                    material = new THREE.MeshPhongMaterial({ color: 0x00BFFF }); // Light blue shark
+                    height = 1;
+                    yOffset = height / 2;
+                    obstacleMesh = new THREE.Mesh(geometry, material);
+                    obstacleMesh.rotation.x = Math.PI / 2; // Point fin upwards
+                    break;
+                case 'shipwreck':
+                    // Shipwreck as a brown cube
+                    geometry = new THREE.BoxGeometry(laneWidth * 0.9, 2, 3); // Wider and taller
+                    material = new THREE.MeshPhongMaterial({ color: 0x8B4513 }); // Brown for wood
+                    height = 2;
+                    yOffset = height / 2;
+                    obstacleMesh = new THREE.Mesh(geometry, material);
+                    break;
+                case 'rock':
+                    // Rock as a grey cube
+                    geometry = new THREE.BoxGeometry(0.7, 0.7, 0.7); // Cube shape for rock
+                    material = new THREE.MeshPhongMaterial({ color: 0x808080 }); // Grey for rock
+                    height = 0.7;
+                    yOffset = height / 2;
+                    obstacleMesh = new THREE.Mesh(geometry, material);
+                    break;
+            }
+
+            obstacleMesh.position.set(playerLanePositions[lane], yOffset, zPosition); // Use provided zPosition
+            obstacleMesh.castShadow = true;
+            obstacleMesh.userData = { type: type, height: height, width: width || geometry.parameters.width, depth: depth || geometry.parameters.depth };
+            scene.add(obstacleMesh);
+            obstacles.push(obstacleMesh);
+        }
+
+        // Helper function to spawn a single new obstacle far ahead
+        function spawnSingleNewObstacleAhead() {
+            const randomLane = Math.floor(Math.random() * numberOfLanes);
+            const obstacleTypes = ['marine', 'boat', 'shark', 'shipwreck', 'rock'];
+            const randomType = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
+
+            // Find the furthest Z position among existing obstacles to spawn new ones even further
+            let furthestZ = camera.position.z - 50; // Default if no obstacles
+            if (obstacles.length > 0) {
+                // Find the obstacle with the smallest (most negative) Z position, as they move towards positive Z
+                furthestZ = Math.min(...obstacles.map(o => o.position.z));
+            }
+
+            // Spawn a new obstacle even further down the track
+            const spawnZ = furthestZ - obstacleSpawnInterval - (Math.random() * 5); // Add some randomness for varied spacing
+            createObstacle(randomType, randomLane, spawnZ);
+        }
+
+
+        function createCollectible(lane, zPosition) {
+            const geometry = new THREE.SphereGeometry(0.4, 16, 16);
+            const material = new THREE.MeshPhongMaterial({ color: 0xffd700 }); // Gold coin
+            const collectibleMesh = new THREE.Mesh(geometry, material);
+            collectibleMesh.position.set(playerLanePositions[lane], 0.5, zPosition + Math.random() * 5 - 2.5); // Spawn near obstacle
+            collectibleMesh.userData = { type: 'coin' };
+            scene.add(collectibleMesh);
+            collectibles.push(collectibleMesh);
+        }
+
+        function createCloud() {
+            const cloudGeometry = new THREE.BoxGeometry(2 + Math.random() * 3, 1 + Math.random() * 2, 1 + Math.random() * 2);
+            const cloudMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.7 });
+            const cloud = new THREE.Mesh(cloudGeometry, cloudMaterial);
+
+            // Position clouds randomly in the sky, ahead of the camera
+            cloud.position.set(
+                (Math.random() - 0.5) * 50, // X position
+                20 + Math.random() * 10, // Y position (height)
+                camera.position.z - 100 - Math.random() * cloudSpawnDistance // Z position (ahead of camera)
+            );
+            scene.add(cloud);
+            clouds.push(cloud);
+        }
+
+        function spawnClouds() {
+            if (clouds.length < maxClouds) {
+                createCloud();
+            }
+        }
+
+        // --- Collision Detection ---
+        function checkCollisions() {
+            const playerBox = new THREE.Box3().setFromObject(player);
+
+            // Check obstacle collisions
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                const obstacle = obstacles[i];
+                const obstacleBox = new THREE.Box3().setFromObject(obstacle);
+
+                if (playerBox.intersectsBox(obstacleBox)) {
+                    // Specific collision logic based on obstacle type and player state
+                    if (obstacle.userData.type === 'marine') {
+                        if (slideState.isSliding) {
+                            // Player slides under marine (if marine is tall enough)
+                            // For simplicity, let's say sliding avoids marines entirely for now
+                            // In a more complex game, marine height vs slide height would matter
+                            // For now, any collision with marine means game over unless player jumps over it
+                            if (player.position.y < obstacle.userData.height / 2) { // If player is not jumping over it
+                                endGame();
+                                return;
+                            }
+                        } else if (jumpState.isJumping) {
+                            // If player jumps over marine, no collision
+                            if (player.position.y > obstacle.userData.height / 2) {
+                                continue; // No collision if jumping over
+                            } else {
+                                endGame();
+                                return;
+                            }
+                        } else {
+                            endGame();
+                            return;
+                        }
+                    } else if (obstacle.userData.type === 'boat') {
+                        // Boats are low, so jumping over them is the way
+                        if (player.position.y < obstacle.userData.height / 2 + 0.5) { // If player doesn't jump high enough
+                            endGame();
+                            return;
+                        }
+                    } else if (obstacle.userData.type === 'shark') {
+                        // Sharks are in the water, player must jump or be on a boat (not implemented boats as platforms)
+                        // For now, if player is on ground level and hits shark, game over
+                        if (player.position.y < obstacle.userData.height / 2 + 0.5) {
+                            endGame();
+                            return;
+                        }
+                    } else if (obstacle.userData.type === 'shipwreck') {
+                        // Shipwrecks are tall, require sliding under or jumping over
+                        if (!slideState.isSliding && player.position.y < obstacle.userData.height / 2) {
+                            endGame();
+                            return;
+                        }
+                    } else if (obstacle.userData.type === 'rock') {
+                        // Rocks are low, require jumping over
+                        if (!jumpState.isJumping && player.position.y < obstacle.userData.height / 2 + 0.5) {
+                            endGame();
+                            return;
+                        }
+                    }
+                    else {
+                        // Generic collision for other obstacles
+                        endGame();
+                        return;
+                    }
+                }
+
+                // Remove obstacles that are behind the player
+                if (obstacle.position.z > camera.position.z + 5) { // If obstacle is behind camera
+                    scene.remove(obstacle);
+                    obstacles.splice(i, 1);
+                    obstaclesRemovedThisFrame++; // Increment counter when an obstacle is removed
+                }
+            }
+
+            // Check collectible collisions
+            for (let i = collectibles.length - 1; i >= 0; i--) {
+                const collectible = collectibles[i];
+                const collectibleBox = new THREE.Box3().setFromObject(collectible);
+
+                if (playerBox.intersectsBox(collectibleBox)) {
+                    score += 10; // Add score for collecting
+                    scoreDisplay.textContent = `Score: ${score}`;
+                    scene.remove(collectible);
+                    collectibles.splice(i, 1);
+                }
+
+                // Remove collectibles that are behind the player
+                if (collectible.position.z > camera.position.z + 5) {
+                    scene.remove(collectible);
+                    collectibles.splice(i, 1);
+                }
+            }
+        }
+
+        // --- Game Loop ---
+        function animate() {
+            if (gameOver || paused) { // Stop animation if game is over or paused
+                // Only render the final state if game is over, or if paused, just render current state
+                renderer.render(scene, camera);
+                return;
+            }
+
+            requestAnimationFrame(animate);
+
+            // Update player jump state
+            if (jumpState.isJumping) {
+                player.position.y += jumpState.currentJumpVelocity;
+                jumpState.currentJumpVelocity -= 0.005; // Gravity
+
+                if (player.position.y <= jumpState.initialY) {
+                    player.position.y = jumpState.initialY;
+                    jumpState.isJumping = false;
+                    jumpState.currentJumpVelocity = 0;
+                }
+            }
+
+            // Update player slide state
+            if (slideState.isSliding) {
+                if (Date.now() - slideState.slideTimer > slideState.slideDuration) {
+                    slideState.isSliding = false;
+                    player.scale.y = slideState.initialScaleY; // Restore player scale
+                    player.position.y = jumpState.initialY; // Restore player Y position
+                }
+            }
+
+            // Animate waves (subtle up-and-down motion)
+            if (waves) {
+                waves.position.y = 0.05 + Math.sin(Date.now() * 0.005) * 0.1; // Gentle bobbing
+            }
+
+            // Move obstacles and collectibles
+            obstacles.forEach(obstacle => {
+                obstacle.position.z += gameSpeed;
+            });
+            collectibles.forEach(collectible => {
+                collectible.position.z += gameSpeed;
+                // Rotate collectibles for visual appeal
+                collectible.rotation.y += 0.05;
+            });
+
+            // Move clouds and remove if behind camera
+            for (let i = clouds.length - 1; i >= 0; i--) {
+                const cloud = clouds[i];
+                cloud.position.z += gameSpeed * 0.5; // Clouds move slower than obstacles
+
+                if (cloud.position.z > camera.position.z + 50) { // If cloud is far behind camera
+                    scene.remove(cloud);
+                    clouds.splice(i, 1);
+                }
+            }
+
+            // Update score based on distance
+            score += Math.floor(gameSpeed * 10);
+            scoreDisplay.textContent = `Score: ${score}`;
+
+            // Increase game speed gradually
+            gameSpeed += 0.00005;
+
+            // Spawn 2 new obstacles for each one that was removed in the previous frame
+            if (obstaclesRemovedThisFrame > 0) {
+                for (let i = 0; i < obstaclesRemovedThisFrame * 2; i++) {
+                    // Ensure we don't spawn excessively if the game is somehow lagging
+                    if (obstacles.length < maxObstacles * 2) { // Allow up to double the max for burst spawns
+                        spawnSingleNewObstacleAhead();
+                    }
+                }
+                obstaclesRemovedThisFrame = 0; // Reset counter
+            }
+
+            spawnClouds(); // Spawn new clouds
+            checkCollisions();
+
+            TWEEN.update(); // Update any active tweens (for player lane movement)
+            renderer.render(scene, camera);
+        }
+
+        // --- Event Handlers ---
+        function onKeyDown(event) {
+            // Handle pause key separately, even if game is over
+            if (event.key === 'Escape') {
+                togglePause();
+                return; // Prevent other actions when pausing/unpausing
+            }
+
+            if (gameOver || paused) return; // Prevent actions if game is over or paused
+
+            // Convert key to lowercase to handle both 'W' and 'w' etc.
+            const key = event.key.toLowerCase();
+
+            switch (key) {
+                case 'arrowleft':
+                case 'a':
+                    movePlayer(-1);
+                    break;
+                case 'arrowright':
+                case 'd':
+                    movePlayer(1);
+                    break;
+                case 'arrowup':
+                case 'w':
+                    jump();
+                    break;
+                case 'arrowdown':
+                case 's':
+                    slide();
+                    break;
+            }
+        }
+
+        // --- Download Functionality ---
+        function downloadGame() {
+            // Get the entire HTML content of the current document
+            const htmlContent = document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'pirate_runner_game.html'; // Suggested file name
+            document.body.appendChild(a); // Append to body to make it clickable
+            a.click(); // Programmatically click the link to trigger download
+            document.body.removeChild(a); // Clean up the temporary link
+            URL.revokeObjectURL(url); // Release the object URL
+        }
+
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth * 0.8, window.innerHeight * 0.8);
+        }
+
+        // Initialize the game when the window loads
+        window.onload = function() {
+            init();
+        };
+
+        // --- TWEEN.js (for smooth animations) ---
+        // This is a simplified version of TWEEN.js, just enough for basic easing.
+        // For a full version, you'd typically include it from a CDN.
+        // I'm including a minimal version here to make the code self-contained.
+        var TWEEN = TWEEN || (function () {
+            var _tweens = [];
+            return {
+                getAll: function () {
+                    return _tweens;
+                },
+                removeAll: function () {
+                    _tweens = [];
+                },
+                add: function (tween) {
+                    _tweens.push(tween);
+                },
+                remove: function (tween) {
+                    var i = _tweens.indexOf(tween);
+                    if (i !== -1) {
+                        _tweens.splice(i, 1);
+                    }
+                },
+                update: function (time) {
+                    if (time === undefined) {
+                        time = Date.now();
+                    }
+                    if (_tweens.length === 0) return false;
+                    var i = 0;
+                    while (i < _tweens.length) {
+                        if (_tweens[i].update(time)) {
+                            i++;
+                        } else {
+                            _tweens.splice(i, 1);
+                        }
+                    }
+                    return true;
+                }
+            };
+        })();
+
+        TWEEN.Tween = function (object) {
+            var _object = object;
+            var _valuesStart = {};
+            var _valuesEnd = {};
+            var _duration = 1000;
+            var _easingFunction = TWEEN.Easing.Linear.None;
+            var _startTime = null;
+            var _onUpdateCallback = null;
+            var _onCompleteCallback = null;
+
+            this.to = function (properties, duration) {
+                if (duration !== undefined) {
+                    _duration = duration;
+                }
+                _valuesEnd = properties;
+                return this;
+            };
+
+            this.start = function (time) {
+                TWEEN.add(this);
+                _startTime = time !== undefined ? time : Date.now();
+                for (var property in _valuesEnd) {
+                    if (_object[property] === undefined) {
+                        continue;
+                    }
+                    _valuesStart[property] = _object[property];
+                }
+                return this;
+            };
+
+            this.stop = function () {
+                TWEEN.remove(this);
+                return this;
+            };
+
+            this.easing = function (easingFunction) {
+                _easingFunction = easingFunction;
+                return this;
+            };
+
+            this.onUpdate = function (callback) {
+                _onUpdateCallback = callback;
+                return this;
+            };
+
+            this.onComplete = function (callback) {
+                _onCompleteCallback = callback;
+                return this;
+            };
+
+            this.update = function (time) {
+                if (time === undefined) {
+                    time = Date.now();
+                }
+                if (time < _startTime) {
+                    return true;
+                }
+                var elapsed = (time - _startTime) / _duration;
+                elapsed = elapsed > 1 ? 1 : elapsed;
+                var value = _easingFunction(elapsed);
+
+                for (var property in _valuesStart) {
+                    var start = _valuesStart[property];
+                    var end = _valuesEnd[property];
+                    _object[property] = start + (end - start) * value;
+                }
+
+                if (_onUpdateCallback !== null) {
+                    _onUpdateCallback.call(_object, value);
+                }
+
+                if (elapsed === 1) {
+                    if (_onCompleteCallback !== null) {
+                        _onCompleteCallback.call(_object);
+                    }
+                    return false;
+                }
+                return true;
+            };
+        };
+
+        TWEEN.Easing = {
+            Linear: {
+                None: function (k) {
+                    return k;
+                }
+            },
+            Quadratic: {
+                In: function (k) {
+                    return k * k;
+                },
+                Out: function (k) {
+                    return k * (2 - k);
+                },
+                InOut: function (k) {
+                    if ((k *= 2) < 1) return 0.5 * k * k;
+                    return -0.5 * (--k * (k - 2) - 1);
+                }
+            }
+        };
+
+    </script>
+
+
+</body></html>

@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career AI</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f0f0; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 1rem; /* Rounded corners for the main container */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 1200px; /* Max width for larger screens */
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Ensure rounded corners apply to content */
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: #e0e0e0; /* Header background */
+            border-bottom: 1px solid #ccc;
+        }
+        .header-title {
+            color: #228B22; /* Green for Career AI */
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .logo-placeholder {
+            width: 40px;
+            height: 40px;
+            background-color: #ccc;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.75rem;
+            color: #666;
+            border: 1px solid #aaa;
+        }
+        .main-content {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .left-panel {
+            flex: 3;
+            padding: 2rem;
+            background-color: #f8f8f8; /* Lighter background for content */
+            overflow-y: auto; /* Scroll for long content */
+        }
+        .right-sidebar {
+            flex: 1;
+            padding: 2rem;
+            background-color: #e0e0e0; /* Sidebar background */
+            border-left: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .sidebar-item {
+            cursor: pointer;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s ease;
+        }
+        .sidebar-item:hover {
+            background-color: #d0d0d0;
+        }
+        .job-listing-card, .employee-card, .applicant-card, .internship-card {
+            background-color: #a0a0a0; /* Gray for cards */
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #ccc;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            color: #444;
+        }
+        .btn-primary {
+            background-color: #1a237e; /* Dark blue */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #0d135e;
+        }
+        .btn-green {
+            background-color: #228B22; /* Green */
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s ease;
+        }
+        .btn-green:hover {
+            background-color: #1a6b1a;
+        }
+        .btn-red {
+            background-color: #dc2626; /* Red */
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s ease;
+        }
+        .btn-red:hover {
+            background-color: #b91c1c;
+        }
+        .upload-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            border: 2px dashed #ccc;
+            border-radius: 1rem;
+            background-color: #e0e0e0;
+            color: #666;
+            font-size: 1.25rem;
+            text-align: center;
+        }
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Profile specific styles */
+        .profile-content {
+            background-color: #f0f0f0; /* Lighter gray for profile content */
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .profile-header-card {
+            background-color: #a0a0a0;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .profile-detail-item {
+            margin-bottom: 0.5rem;
+        }
+        .profile-detail-label {
+            font-weight: 600;
+            color: #333;
+        }
+        .profile-summary {
+            margin-top: 1rem;
+            line-height: 1.5;
+            color: #555;
+        }
+
+
+        /* Dropdown specific styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            top: 100%; /* Position below the button */
+            left: 0;
+            margin-top: 0.5rem; /* Space between button and dropdown */
+        }
+        .dropdown-content button {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+            text-align: left;
+            background-color: #f9f9f9;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .dropdown-content button:hover {
+            background-color: #e0e0e0;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .show {
+            display: block;
+        }
+
+        /* Sign-up page specific styles */
+        .signup-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 2rem;
+        }
+        .signup-header {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            padding: 1rem;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .back-arrow {
+            font-size: 2rem;
+            cursor: pointer;
+            color: #333;
+        }
+        .signup-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            font-size: 1rem;
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .right-sidebar {
+                border-left: none;
+                border-top: 1px solid #ccc;
+                width: 100%;
+            }
+            .header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .header-title {
+                font-size: 1.2rem;
+            }
+            .profile-section {
+                width: 100%;
+                justify-content: center;
+            }
+            .dropdown {
+                width: 100%; /* Full width for dropdown on small screens */
+            }
+            .dropdown-content {
+                width: 100%; /* Full width for dropdown content */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app-container" class="container">
+        <!-- Content will be dynamically loaded here -->
+    </div>
+
+    <script>
+        // Function to render the homepage
+        function renderHomePage() {
+            const appContainer = document.getElementById('app-container');
+            appContainer.innerHTML = `
+                <div class="flex flex-col items-center justify-center h-full p-8">
+                    <div class="mb-8">
+                        <img src="https://content.googleapis.com/v1/files/uploaded:Career AI homepage.png-fa26154d-3dfb-4d23-a4de-bcc1c76dd82e?alt=media" alt="Career AI Logo" class="w-24 h-24 rounded-lg">
+                    </div>
+                    <div class="dropdown w-full max-w-xs mb-4">
+                        <button id="loginButton" class="btn-primary w-full">Log In As</button>
+                        <div id="loginDropdown" class="dropdown-content">
+                            <button id="applicantLoginBtn">An Applicant</button>
+                            <button id="businessLoginBtn">A Business</button>
+                        </div>
+                    </div>
+                    <button id="signupPageBtn" class="btn-primary w-full max-w-xs">Sign up</button>
+                </div>
+            `;
+            appContainer.classList.remove('flex-col'); // Ensure it adapts to content
+            appContainer.classList.add('flex', 'justify-center', 'items-center');
+
+            // Attach event listeners after the elements are in the DOM
+            const loginButton = document.getElementById('loginButton');
+            const loginDropdown = document.getElementById('loginDropdown');
+            const applicantLoginBtn = document.getElementById('applicantLoginBtn');
+            const businessLoginBtn = document.getElementById('businessLoginBtn');
+            const signupPageBtn = document.getElementById('signupPageBtn');
+
+            if (loginButton) {
+                loginButton.addEventListener('click', function(event) {
+                    event.stopPropagation(); // Prevent window.onclick from immediately closing it
+                    if (loginDropdown) {
+                        loginDropdown.classList.toggle('show');
+                    }
+                });
+            }
+
+            if (applicantLoginBtn) {
+                applicantLoginBtn.addEventListener('click', function() {
+                    renderApplicantHomePage();
+                    if (loginDropdown) loginDropdown.classList.remove('show'); // Close dropdown
+                });
+            }
+
+            if (businessLoginBtn) {
+                businessLoginBtn.addEventListener('click', function() {
+                    renderBusinessHomePage();
+                    if (loginDropdown) loginDropdown.classList.remove('show'); // Close dropdown
+                });
+            }
+
+            if (signupPageBtn) {
+                signupPageBtn.addEventListener('click', renderSignUpPage);
+            }
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function(event) {
+            // Check if the click occurred outside the dropdown container
+            if (!event.target.closest('.dropdown')) {
+                const dropdowns = document.getElementsByClassName("dropdown-content");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+
+        // Function to render the Sign Up Page
+        function renderSignUpPage() {
+            const appContainer = document.getElementById('app-container');
+            appContainer.classList.remove('flex-col'); // Ensure it adapts to content
+            appContainer.classList.add('flex', 'justify-center', 'items-center');
+
+            appContainer.innerHTML = `
+                <div class="signup-header">
+                    <span class="back-arrow" onclick="renderHomePage()">&#8592;</span>
+                </div>
+                <div class="flex flex-col items-center justify-center p-8">
+                    <div class="mb-8">
+                        <img src="https://content.googleapis.com/v1/files/uploaded:Career AI homepage.png-fa26154d-3dfb-4d23-a4de-bcc1c76dd82e?alt=media" alt="Career AI Logo" class="w-24 h-24 rounded-lg">
+                    </div>
+                    <input type="email" placeholder="Please Enter Your Email" class="signup-input">
+                    <input type="password" placeholder="Please Enter A Password" class="signup-input">
+                    <input type="password" placeholder="Please Enter Confirm Password" class="signup-input">
+                    <button class="btn-primary w-full max-w-xs" onclick="alert('Sign Up functionality not yet implemented!')">Sign up</button>
+                </div>
+            `;
+        }
+
+
+        // Function to render the Applicant Home Page
+        function renderApplicantHomePage() {
+            const appContainer = document.getElementById('app-container');
+            appContainer.classList.remove('flex', 'justify-center', 'items-center');
+            appContainer.classList.add('flex-col'); // Set to column for header/main layout
+
+            appContainer.innerHTML = `
+                <div class="header">
+                    <div class="header-title">Career AI</div>
+                    <div class="profile-section">
+                        <span class="cursor-pointer" onclick="renderApplicantProfilePage()">Profile</span>
+                        <img src="https://placehold.co/40x40/e0e0e0/228B22?text=👤" alt="Profile Icon" class="w-10 h-10 rounded-full cursor-pointer" onclick="renderApplicantProfilePage()">
+                    </div>
+                </div>
+                <div class="main-content">
+                    <div class="left-panel">
+                        <h2 class="text-xl font-semibold mb-4">Job Listings</h2>
+                        <!-- Job Listing Cards -->
+                        <div class="job-listing-card">
+                            <div class="card-icon">💼</div>
+                            <span class="text-lg font-medium">Job Listing 1</span>
+                        </div>
+                        <div class="job-listing-card">
+                            <div class="card-icon">💼</div>
+                            <span class="text-lg font-medium">Job Listing 2</span>
+                        </div>
+                        <div class="job-listing-card">
+                            <div class="card-icon">💼</div>
+                            <span class="text-lg font-medium">Job Listing 3</span>
+                        </div>
+                        <div class="job-listing-card">
+                            <div class="card-icon">💼</div>
+                            <span class="text-lg font-medium">Job Listing 4</span>
+                        </div>
+                    </div>
+                    <div class="right-sidebar">
+                        <div class="sidebar-item" onclick="alert('View Applications functionality not implemented yet.')">View Applications</div>
+                        <div class="sidebar-item" onclick="renderResumeUploadPortal()">Upload Resume</div>
+                        <div class="sidebar-item" onclick="alert('Edit Resume functionality not implemented yet.')">Edit Resume</div>
+                        <div class="sidebar-item" onclick="renderInternshipListingsPage()">Internship Listings</div>
+                        <div class="sidebar-item" onclick="renderHomePage()">Logout</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Function to render the Applicant Profile Page
+        function renderApplicantProfilePage() {
+            const appContainer = document.getElementById('app-container');
+            appContainer.classList.remove('flex', 'justify-center', 'items-center');
+            appContainer.classList.add('flex-col'); // Set to column for header/main layout
+
+            appContainer.innerHTML = `
+                <div class="header">
+                    <div class="header-title">Career AI</div>
+                    <div class="profile-section">
+                        <span>Your Profile</span>
+                        <img src="https://placehold.co/40x40/e0e0e0/228B22?text=👤" alt="Profile Icon" class="w-10 h-10 rounded-full">
+                    </div>
+                </div>
+                <div class="main-content">
+                    <div class="left-panel">
+                        <h2 class="text-xl font-semibold mb-4">Your Profile</h2>
+                        <div class="profile-header-card">
+                            <div class="card-icon">👤</div>
+                            <span class="text-lg font-medium">Unemployed</span>
+                        </div>
+                        <div class="profile-content">
+                            <h3 class="text-lg font-bold mb-2">[YOUR NAME]</h3>
+                            <div class="text-sm profile-detail-item">8800 SE Woodward St</div>
+                            <div class="text-sm profile-detail-item">Portland, OR 97266</div>
+                            <div class="text-sm profile-detail-item">Phone: 222 555 7000</div>
+                            <div class="text-sm profile-detail-item">Email: [YOUR EMAIL]</div>
+                            <div class="text-sm profile-detail-item">LinkedIn: linkedin.com/in/yourname</div>
+
+                            <h4 class="text-md font-semibold mt-4 mb-2">PROFESSIONAL SUMMARY</h4>
+                            <p class="text-sm profile-summary">
+                                Results-driven Marketing Specialist with over 3 years of experience in digital marketing, brand
+                                management, and content strategy. Proven track record of increasing online engagement by
+                                20%, and driving revenue growth through targeted campaigns. Adept at SEO, social media
+                                management, and data analysis. Seeking to leverage expertise in campaign optimization to
+                                contribute to [YOUR COMPANY NAME] as a Digital Marketing Manager.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="right-sidebar">
+                        <div class="sidebar-item" onclick="alert('View Applications functionality not implemented yet.')">View Applications</div>
+                        <div class="sidebar-item" onclick="renderApplicantHomePage()">Job Listings</div>
+                        <div class="sidebar-item" onclick="renderResumeUploadPortal()">Upload Resume</div>
+                        <div class="sidebar-item" onclick="alert('Edit Resume functionality not implemented yet.')">Edit Resume</div>
+                        <div class="sidebar-item" onclick="renderInternshipListingsPage()">Internship Listings</div>
+                        <div class="sidebar-item" onclick="renderHomePage()">Logout</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Function to render the Internship Listings Page
+        function renderInternshipListingsPage() {
+            const appContainer = document.getElementById('app-container');
+            appContainer.classList.remove('flex', 'justify-center', 'items-center');
+            appContainer.classList.add('flex-col'); // Set to column for header/main layout
+
+            appContainer.innerHTML = `
+                <div class="header">
+                    <div class="header-title">Career AI</div>
+                    <div class="profile-section">
+                        <span>Profile</span>
+                        <img src="https://placehold.co/40x40/e0e0e0/228B22?text=👤" alt="Profile Icon" class="w-10 h-10 rounded-full">
+                    </div>
+                </div>
+                <div class="main-content">
+                    <div class="left-panel">
+                        <h2 class="text-xl font-semibold mb-4">Internship Listings</h2>
+                        <!-- Internship Listing Cards -->
+                        <div class="internship-card">
+                            <div class="card-icon">🎓</div>
+                            <span class="text-lg font-medium">Internship 1</span>
+                        </div>
+                        <div class="internship-card">
+                            <div class="card-icon">🎓</div>
+                            <span class="text-lg font-medium">Internship 2</span>
+                        </div>
+                        <div class="internship-card">
+                            <div class="card-icon">🎓</div>
+                            <span class="text-lg font-medium">Internship 3</span>
+                        </div>
+                        <div class="internship-card">
+                            <div class="card-icon">🎓</div>
+                            <span class="text-lg font-medium">Internship 4</span>
+                        </div>
+                    </div>
+                    <div class="right-sidebar">
+                        <div class="sidebar-item" onclick="alert('View Applications functionality not implemented yet.')">View Applications</div>
+                        <div class="sidebar-item" onclick="renderResumeUploadPortal()">Upload Resume</div>
+                        <div class="sidebar-item" onclick="alert('Edit Resume functionality not implemented yet.')">Edit Resume</div>
+                        <div class="sidebar-item" onclick="renderApplicantHomePage()">Job Listings</div>
+                        <div class="sidebar-item" onclick="renderHomePage()">Logout</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Function to render the Business Home Page
+        function renderBusinessHomePage() {
+            const appContainer = document.getElementById('app-container');
+            appContainer.classList.remove('flex', 'justify-center', 'items-center');
+            appContainer.classList.add('flex-col'); // Set to column for header/main layout
+
+            appContainer.innerHTML = `
+                <div class="header">
+                    <div class="header-title">Business Name</div>
+                    <div class="profile-section">
+                        <div class="logo-placeholder">Logo</div>
+                    </div>
+                </div>
+                <div class="main-content">
+                    <div class="left-panel grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <h2 class="text-xl font-semibold mb-4 col-span-full">Employees</h2>
+                        <!-- Employee Cards -->
+                        <div class="employee-card">
+                            <div class="card-icon">👤</div>
+                            <span class="text-lg font-medium">Employee 1</span>
+                        </div>
+                        <div class="employee-card">
+                            <div class="card-icon">👤</div>
+                            <span class="text-lg font-medium">Employee 2</span>
+                        </div>
+                        <div class="employee-card">
+                            <div class="card-icon">👤</div>
+                            <span class="text-lg font-medium">Employee 3</span>
+                        </div>
+                        <div class="employee-card">
+                            <div class="card-icon">👤</div>
+                            <span class="text-lg font-medium">Employee 4</span>
+                        </div>
+                        <div class="employee-card">
+                            <div class="card-icon">👤</div>
+                            <span class="text-lg font-medium">Employee 5</span>
+                        </div>
+                        <div class="employee-card">
+                            <div class="card-icon">👤</div>
+                            <span class="text-lg font-medium">Employee 6</span>
+                        </div>
+                    </div>
+                    <div class="right-sidebar">
+                        <div class="sidebar-item" onclick="renderBusinessListingPage()">Add Listing</div>
+                        <div class="sidebar-item" onclick="renderBusinessListingPage()">View Your Current Listings</div>
+                        <div class="sidebar-item" onclick="alert('Add Employee functionality not implemented yet.')">Add Employee</div>
+                        <div class="sidebar-item" onclick="alert('Terminate Employee functionality not implemented yet.')">Terminate Employee</div>
+                        <div class="sidebar-item" onclick="renderHomePage()">Logout</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Function to render the Business Listing Page
+        function renderBusinessListingPage() {
+            const appContainer = document.getElementById('app-container');
+            appContainer.classList.remove('flex', 'justify-center', 'items-center');
+            appContainer.classList.add('flex-col'); // Set to column for header/main layout
+
+            appContainer.innerHTML = `
+                <div class="header">
+                    <div class="header-title">Career AI</div>
+                    <div class="profile-section">
+                        <div class="logo-placeholder">Logo</div>
+                    </div>
+                </div>
+                <div class="main-content">
+                    <div class="left-panel">
+                        <h2 class="text-xl font-semibold mb-4">Your Job Listing</h2>
+                        <!-- Applicant Cards with actions -->
+                        <div class="applicant-card flex flex-col md:flex-row justify-between items-center">
+                            <div class="flex items-center gap-4 mb-2 md:mb-0">
+                                <div class="card-icon">👤</div>
+                                <span class="text-lg font-medium">Applicant 1</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="btn-primary" onclick="alert('View Resume functionality not implemented yet.')">View Resume</button>
+                                <button class="btn-green" onclick="alert('Consider Applicant 1')">Consider</button>
+                                <button class="btn-red" onclick="alert('Reject Applicant 1')">Reject</button>
+                            </div>
+                        </div>
+                        <div class="applicant-card flex flex-col md:flex-row justify-between items-center">
+                            <div class="flex items-center gap-4 mb-2 md:mb-0">
+                                <div class="card-icon">👤</div>
+                                <span class="text-lg font-medium">Applicant 2</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="btn-primary" onclick="alert('View Resume functionality not implemented yet.')">View Resume</button>
+                                <button class="btn-green" onclick="alert('Consider Applicant 2')">Consider</button>
+                                <button class="btn-red" onclick="alert('Reject Applicant 2')">Reject</button>
+                            </div>
+                        </div>
+                        <div class="applicant-card flex flex-col md:flex-row justify-between items-center">
+                            <div class="flex items-center gap-4 mb-2 md:mb-0">
+                                <div class="card-icon">👤</div>
+                                <span class="text-lg font-medium">Applicant 3</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="btn-primary" onclick="alert('View Resume functionality not implemented yet.')">View Resume</button>
+                                <button class="btn-green" onclick="alert('Consider Applicant 3')">Consider</button>
+                                <button class="btn-red" onclick="alert('Reject Applicant 3')">Reject</button>
+                            </div>
+                        </div>
+                        <div class="applicant-card flex flex-col md:flex-row justify-between items-center">
+                            <div class="flex items-center gap-4 mb-2 md:mb-0">
+                                <div class="card-icon">👤</div>
+                                <span class="text-lg font-medium">Applicant 4</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="btn-primary" onclick="alert('View Resume functionality not implemented yet.')">View Resume</button>
+                                <button class="btn-green" onclick="alert('Consider Applicant 4')">Consider</button>
+                                <button class="btn-red" onclick="alert('Reject Applicant 4')">Reject</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right-sidebar">
+                        <div class="sidebar-item" onclick="alert('Add Listings functionality not implemented yet.')">Add Listings</div>
+                        <div class="sidebar-item" onclick="alert('Business Profile functionality not implemented yet.')">Business Profile</div>
+                        <div class="sidebar-item" onclick="alert('Edit Listing functionality not implemented yet.')">Edit Listing</div>
+                        <div class="sidebar-item" onclick="renderHomePage()">Logout</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Function to render the Resume Upload Portal
+        function renderResumeUploadPortal() {
+            const appContainer = document.getElementById('app-container');
+            appContainer.classList.remove('flex', 'justify-center', 'items-center');
+            appContainer.classList.add('flex-col'); // Set to column for header/main layout
+
+            appContainer.innerHTML = `
+                <div class="header">
+                    <div class="header-title">Career AI</div>
+                    <div class="profile-section">
+                        <span class="cursor-pointer" onclick="renderApplicantProfilePage()">Profile</span>
+                        <img src="https://placehold.co/40x40/e0e0e0/228B22?text=👤" alt="Profile Icon" class="w-10 h-10 rounded-full cursor-pointer" onclick="renderApplicantProfilePage()">
+                    </div>
+                </div>
+                <div class="main-content">
+                    <div class="left-panel flex items-center justify-center">
+                        <div class="upload-area">
+                            <span class="upload-icon">⬆️</span>
+                            <span>Upload Resume Here</span>
+                        </div>
+                    </div>
+                    <div class="right-sidebar">
+                        <div class="sidebar-item" onclick="alert('View Applications functionality not implemented yet.')">View Applications</div>
+                        <div class="sidebar-item" onclick="renderApplicantHomePage()">Job Listings</div>
+                        <div class="sidebar-item" onclick="alert('Edit Resume functionality not implemented yet.')">Edit Resume</div>
+                        <div class="sidebar-item" onclick="renderInternshipListingsPage()">Internship Listings</div>
+                        <div class="sidebar-item" onclick="renderHomePage()">Logout</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initial render of the homepage when the page loads
+        document.addEventListener('DOMContentLoaded', renderHomePage);
+    </script>
+</body>
+</html>
