@@ -8,3 +8,4 @@ Personal Website features the following pages:
 3. Resume
 5. Portfolio
 
+This website was created in the 2025 STEP program at VSU
