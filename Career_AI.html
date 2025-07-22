@@ -312,7 +312,13 @@
                             <button id="businessLoginBtn">A Business</button>
                         </div>
                     </div>
-                    <button id="signupPageBtn" class="btn-primary w-full max-w-xs">Sign up</button>
+                    <div class="dropdown w-full max-w-xs">
+                        <button id="signupButton" class="btn-primary w-full">Sign up</button>
+                        <div id="signupDropdown" class="dropdown-content">
+                            <button id="applicantSignupBtn">An Applicant</button>
+                            <button id="businessSignupBtn">A Business</button>
+                        </div>
+                    </div>
                 </div>
             `;
             appContainer.classList.remove('flex-col'); // Ensure it adapts to content
@@ -323,13 +329,20 @@
             const loginDropdown = document.getElementById('loginDropdown');
             const applicantLoginBtn = document.getElementById('applicantLoginBtn');
             const businessLoginBtn = document.getElementById('businessLoginBtn');
-            const signupPageBtn = document.getElementById('signupPageBtn');
+
+            const signupButton = document.getElementById('signupButton');
+            const signupDropdown = document.getElementById('signupDropdown');
+            const applicantSignupBtn = document.getElementById('applicantSignupBtn');
+            const businessSignupBtn = document.getElementById('businessSignupBtn');
+
 
             if (loginButton) {
                 loginButton.addEventListener('click', function(event) {
                     event.stopPropagation(); // Prevent window.onclick from immediately closing it
                     if (loginDropdown) {
                         loginDropdown.classList.toggle('show');
+                        // Close other dropdowns if open
+                        if (signupDropdown) signupDropdown.classList.remove('show');
                     }
                 });
             }
@@ -348,8 +361,29 @@
                 });
             }
 
-            if (signupPageBtn) {
-                signupPageBtn.addEventListener('click', renderSignUpPage);
+            if (signupButton) {
+                signupButton.addEventListener('click', function(event) {
+                    event.stopPropagation(); // Prevent window.onclick from immediately closing it
+                    if (signupDropdown) {
+                        signupDropdown.classList.toggle('show');
+                        // Close other dropdowns if open
+                        if (loginDropdown) loginDropdown.classList.remove('show');
+                    }
+                });
+            }
+
+            if (applicantSignupBtn) {
+                applicantSignupBtn.addEventListener('click', function() {
+                    renderApplicantSignUpPage(); // Call the new function for applicant signup
+                    if (signupDropdown) signupDropdown.classList.remove('show'); // Close dropdown
+                });
+            }
+
+            if (businessSignupBtn) {
+                businessSignupBtn.addEventListener('click', function() {
+                    renderBusinessSignUpPage(); // Renders the existing business signup page
+                    if (signupDropdown) signupDropdown.classList.remove('show'); // Close dropdown
+                });
             }
         }
 
@@ -367,8 +401,31 @@
             }
         }
 
-        // Function to render the Sign Up Page
-        function renderSignUpPage() {
+        // Function to render the Applicant Sign Up Page
+        function renderApplicantSignUpPage() {
+            const appContainer = document.getElementById('app-container');
+            appContainer.classList.remove('flex-col');
+            appContainer.classList.add('flex', 'justify-center', 'items-center');
+
+            appContainer.innerHTML = `
+                <div class="signup-header">
+                    <span class="back-arrow" onclick="renderHomePage()">&#8592;</span>
+                </div>
+                <div class="flex flex-col items-center justify-center p-8">
+                    <div class="mb-8">
+                        <img src="https://content.googleapis.com/v1/files/uploaded:Career AI Sign Up.png-13986ef4-0365-43d7-b53f-45894769d0ce?alt=media" alt="Career AI Logo" class="w-24 h-24 rounded-lg">
+                    </div>
+                    <input type="email" placeholder="Please Enter Your Email" class="signup-input">
+                    <input type="password" placeholder="Please Enter A Password" class="signup-input">
+                    <input type="password" placeholder="Please Enter Confirm Your Password" class="signup-input">
+                    <button class="btn-primary w-full max-w-xs" onclick="renderApplicantHomePage()">Sign up</button>
+                </div>
+            `;
+        }
+
+
+        // Function to render the Business Sign Up Page (previously renderSignUpPage)
+        function renderBusinessSignUpPage() {
             const appContainer = document.getElementById('app-container');
             appContainer.classList.remove('flex-col'); // Ensure it adapts to content
             appContainer.classList.add('flex', 'justify-center', 'items-center');
@@ -379,12 +436,16 @@
                 </div>
                 <div class="flex flex-col items-center justify-center p-8">
                     <div class="mb-8">
-                        <img src="https://content.googleapis.com/v1/files/uploaded:Career AI homepage.png-fa26154d-3dfb-4d23-a4de-bcc1c76dd82e?alt=media" alt="Career AI Logo" class="w-24 h-24 rounded-lg">
+                        <img src="https://content.googleapis.com/v1/files/uploaded:Career AI Business Sign up.png-ed37b2bd-9b65-4738-bfcc-b8faad134519?alt=media" alt="Career AI Logo" class="w-24 h-24 rounded-lg">
                     </div>
-                    <input type="email" placeholder="Please Enter Your Email" class="signup-input">
+                    <input type="text" placeholder="Please Enter Your Business Name" class="signup-input">
                     <input type="password" placeholder="Please Enter A Password" class="signup-input">
-                    <input type="password" placeholder="Please Enter Confirm Password" class="signup-input">
-                    <button class="btn-primary w-full max-w-xs" onclick="alert('Sign Up functionality not yet implemented!')">Sign up</button>
+                    <input type="password" placeholder="Please Enter Confirm Your Password" class="signup-input">
+                    <div class="w-full max-w-xs mb-4 flex items-center justify-between">
+                        <label for="employeeCount" class="text-gray-700 text-sm font-semibold">Current Employee Count:</label>
+                        <input type="number" id="employeeCount" placeholder="Enter Value" class="signup-input w-32 mb-0">
+                    </div>
+                    <button class="btn-primary w-full max-w-xs" onclick="renderBusinessHomePage()">Sign up</button>
                 </div>
             `;
         }
