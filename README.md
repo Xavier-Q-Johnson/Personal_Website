@@ -11,4 +11,5 @@ Personal Website features the following pages:
 ## Website Preview
 <img src='https://i.imgur.com/WBBPURZ.png' title='Website' width='' alt='Website' />
 
-This website was created in the 2025 STEP program at VSU
+This website was created in the 2025 STEP program at VSU!
+
