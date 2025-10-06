@@ -92,7 +92,7 @@
       border-color: #ff6600;
       color: #ff6600;
     }
-    .research-content {
+    .research-content, .organization-content {
       margin-top: 1rem;
       padding: 1rem;
       border-left: 3px solid #66fcf1;
@@ -122,16 +122,13 @@
     </div>
 
     <div id="about" class="hidden">
-  <h2>About Me</h2>
-
-  <!-- Profile Picture Box -->
-  <div style="text-align: center; margin-bottom: 1rem;">
-    <img src="X Johnson Headshot.jpg" alt="Xavier Johnson" style="width: 180px; height: 180px; border-radius: 50%; border: 3px solid #66fcf1; object-fit: cover; box-shadow: 0 0 10px rgba(255, 102, 0, 0.4);">
-    <p style="margin-top: 0.5rem; font-size: 1.2rem; color: #66fcf1;"><strong>Meet the Creator</strong></p>
-  </div>
-
-  <p>I'm a dedicated computer science student attending Virginia State University. I have a strong interest in software development, cybersecurity, and artificial intelligence. I enjoy solving complex problems and building useful, user-friendly tools. In my free time, I contribute to open-source projects, compete in coding challenges, and explore new technologies.</p>
-</div>
+      <h2>About Me</h2>
+      <div style="text-align: center; margin-bottom: 1rem;">
+        <img src="X Johnson Headshot.jpg" alt="Xavier Johnson" style="width: 180px; height: 180px; border-radius: 50%; border: 3px solid #66fcf1; object-fit: cover; box-shadow: 0 0 10px rgba(255, 102, 0, 0.4);">
+        <p style="margin-top: 0.5rem; font-size: 1.2rem; color: #66fcf1;"><strong>Meet the Creator</strong></p>
+      </div>
+      <p>I'm a dedicated computer science student attending Virginia State University. I have a strong interest in software development, cybersecurity, and artificial intelligence. I enjoy solving complex problems and building useful, user-friendly tools. In my free time, I contribute to open-source projects, compete in coding challenges, and explore new technologies.</p>
+    </div>
 
     <div id="resume" class="hidden">
       <h2>Resume</h2>
@@ -143,6 +140,7 @@
       <div class="tab-buttons">
         <button onclick="showPortfolioTab('projects')">Projects</button>
         <button onclick="showPortfolioTab('research')">Research</button>
+        <button onclick="showPortfolioTab('organizations')">Organizations</button>
       </div>
 
       <!-- Projects Tab -->
@@ -185,16 +183,33 @@
           <p>Participated in a hands-on laboratory experience at BioBuilder in Boston, Massachusetts, through the Kappa League program, where I collaborated with peers to cultivate engineered cells intended for use in synthetic biology applications.</p>
         </div>
         <div id="research5" class="research-content hidden">
-        <h4>Career AI</h4>
-        <p>During the Thurgood Marshal College Fund Program called SOAR I created an idea with a team of four to create an AI that would sort through resumes for employers selecting the best ones out of the pool.</p>
-        <p><a href= "AI JOB APPLICATION READER.pdf" target="_blank">Our Research</a></p>
+          <h4>Career AI</h4>
+          <p>During the Thurgood Marshall College Fund Program called SOAR I created an idea with a team of four to create an AI that would sort through resumes for employers selecting the best ones out of the pool.</p>
+          <p><a href="AI JOB APPLICATION READER.pdf" target="_blank">Our Research</a></p>
+        </div>
+      </div>
+
+      <!-- Organizations Tab -->
+      <div id="organizations-tab" class="hidden">
+        <h3>Organizations</h3>
+        <div class="organization-content">
+          <h4>Kappa League</h4>
+          <p>Member of the Kappa League, a youth leadership development program focused on academic excellence, community service, and professional growth.</p>
+        </div>
+        <div class="organization-content">
+          <h4>Thurgood Marshall College Fund (SOAR Program)</h4>
+          <p>Participated in the SOAR Program, collaborating with peers on professional development workshops, networking sessions, and AI-focused innovation projects.</p>
+        </div>
+        <div class="organization-content">
+          <h4>Virginia State University Computer Science Club</h4>
+          <p>Active member of the Computer Science Club, engaging in collaborative coding challenges, hackathons, and mentoring sessions to promote STEM engagement.</p>
         </div>
       </div>
 
       <!-- Project Details Sections -->
       <div id="project-detail-1" class="hidden">
         <h2>Project 1: Vex IQ Robot</h2>
-        <p>Built and programed a Vex IQ Robot to complete an obstical course.</p>
+        <p>Built and programed a Vex IQ Robot to complete an obstacle course.</p>
       </div>
       <div id="project-detail-2" class="hidden">
         <h2>Project 2: Raspberry Pi</h2>
@@ -211,7 +226,7 @@
       <div id="project-detail-5" class="hidden">
         <h2>Project 5: Pirate Runner Game</h2>
         <p>Built and programed a web game that plays like Subway Surfers about pirates.</p>
-        <p><a href= "pirate_runner_game.html" target="_blank">Try It!</a></p>
+        <p><a href="pirate_runner_game.html" target="_blank">Try It!</a></p>
       </div>
     </div>
   </div>
@@ -259,6 +274,7 @@
     function showPortfolioTab(tab) {
       document.getElementById('projects-tab').classList.add('hidden');
       document.getElementById('research-tab').classList.add('hidden');
+      document.getElementById('organizations-tab').classList.add('hidden');
       document.getElementById(`${tab}-tab`).classList.remove('hidden');
       hideAllProjectDetails();
     }
