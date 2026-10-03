@@ -4,103 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Xavier Johnson's Student Portfolio</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #0b0c10;
-      color: #ffffff;
-    }
-    header, nav, footer {
-      background-color: #1f2833;
-      color: #66fcf1;
-      padding: 1rem;
-      text-align: center;
-      position: relative;
-      box-shadow: 0 2px 10px rgba(255, 102, 0, 0.5);
-    }
-    nav a {
-      margin: 0 15px;
-      color: #66fcf1;
-      text-decoration: none;
-      font-weight: bold;
-      transition: color 0.3s;
-    }
-    nav a:hover {
-      color: #ff6600;
-    }
-    .back-arrow {
-      position: absolute;
-      left: 1rem;
-      top: 1rem;
-      font-size: 1.5rem;
-      text-decoration: none;
-      color: #ff6600;
-      cursor: pointer;
-    }
-    .container {
-      padding: 2rem;
-      background-color: #1f2833;
-      border-radius: 8px;
-      margin: 2rem;
-      box-shadow: 0 0 20px rgba(102, 252, 241, 0.2);
-    }
-    .hidden {
-      display: none;
-    }
-    .footer-links a {
-      color: #66fcf1;
-      margin: 0 10px;
-      text-decoration: none;
-      transition: color 0.3s;
-    }
-    .footer-links a:hover {
-      color: #ff6600;
-    }
-    h1, h2 {
-      color: #ff6600;
-    }
-    a {
-      color: #45a29e;
-    }
-    .card {
-      background-color: #0b0c10;
-      padding: 1rem;
-      border: 2px solid #ff6600;
-      border-radius: 12px;
-      cursor: pointer;
-      text-align: center;
-      box-shadow: 0 4px 10px rgba(255, 102, 0, 0.3);
-      transition: transform 0.2s, box-shadow 0.3s;
-    }
-    .card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 20px rgba(255, 102, 0, 0.5);
-    }
-    .tab-buttons button {
-      background-color: #0b0c10;
-      border: 2px solid #66fcf1;
-      color: #66fcf1;
-      padding: 0.5rem 1rem;
-      margin: 0.5rem;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: all 0.3s;
-    }
-    .tab-buttons button:hover {
-      border-color: #ff6600;
-      color: #ff6600;
-    }
-    .research-content, .organization-content {
-      margin-top: 1rem;
-      padding: 1rem;
-      border-left: 3px solid #66fcf1;
-      background-color: #0b0c10;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(102, 252, 241, 0.1);
-    }
-  </style>
+  <!-- Linked External Stylesheet -->
+  <link rel="stylesheet" href="personal_portfolio.css" />
 </head>
 <body>
   <header>
@@ -124,15 +29,36 @@
     <div id="about" class="hidden">
       <h2>About Me</h2>
       <div style="text-align: center; margin-bottom: 1rem;">
-        <img src="X Johnson Headshot.jpg" alt="Xavier Johnson" style="width: 180px; height: 180px; border-radius: 50%; border: 3px solid #66fcf1; object-fit: cover; box-shadow: 0 0 10px rgba(255, 102, 0, 0.4);">
+        <img src="X Johnson Headshot.jpg" alt="Xavier Johnson" style="width: 180px; height: 180px; border-radius: 50%; border: 3px solid #66fcf1; object-fit: cover; box-shadow: 0 0 10px rgba(255, 102, 0, 0.4);" onerror="this.src='https://placehold.co/180x180/1f2833/66fcf1?text=Xavier+Johnson';">
         <p style="margin-top: 0.5rem; font-size: 1.2rem; color: #66fcf1;"><strong>Meet the Creator</strong></p>
       </div>
-      <p>I'm a dedicated computer science student attending Virginia State University. I have a strong interest in software development, cybersecurity, and artificial intelligence. I enjoy solving complex problems and building useful, user-friendly tools. In my free time, I contribute to open-source projects, compete in coding challenges, and explore new technologies.</p>
+      <p>I am a second-year computer science student at Virginia State 
+        University. I have a passion for cyber security and software 
+        development. I am currently seeking internship opportunities to 
+        gain practical experience in the field.</p>
     </div>
 
     <div id="resume" class="hidden">
       <h2>Resume</h2>
-      <p>Download my <a href="Xavier Johnson's Resume.pdf">Resume (PDF)</a></p>
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <a href="Xavier Johnson's Resume.pdf" class="download-btn" target="_blank">📥 Download Resume (PDF)</a>
+      </div>
+
+      <div class="resume-container" style="height: 700px; display: flex; flex-direction: column;">
+        <p style="margin-top: 0; color: #66fcf1; text-align: center; font-size: 0.95rem;">
+          Viewing your resume directly below. If your browser does not support inline PDF viewing, you can use the download button above.
+        </p>
+        <div style="flex-grow: 1; width: 100%; border-radius: 8px; overflow: hidden; border: 2px solid #66fcf1; background-color: #ffffff;">
+          <object data="Xavier Johnson's Resume.pdf" type="application/pdf" width="100%" height="100%">
+            <iframe src="Xavier Johnson's Resume.pdf" width="100%" height="100%" style="border: none;">
+              <p style="color: #0b0c10; padding: 2rem; text-align: center;">
+                Your browser does not support embedded PDFs. Please download the PDF to view it: 
+                <a href="Xavier Johnson's Resume.pdf" target="_blank" style="color: #ff6600; font-weight: bold;">Download Resume</a>
+              </p>
+            </iframe>
+          </object>
+        </div>
+      </div>
     </div>
 
     <div id="portfolio" class="hidden">
@@ -141,6 +67,7 @@
         <button onclick="showPortfolioTab('projects')">Projects</button>
         <button onclick="showPortfolioTab('research')">Research</button>
         <button onclick="showPortfolioTab('organizations')">Organizations</button>
+        <button onclick="showPortfolioTab('experience')">Experience</button>
       </div>
 
       <!-- Projects Tab -->
@@ -203,6 +130,52 @@
         <div class="organization-content">
           <h4>TBA</h4>
           <p>TBA</p>
+        </div>
+      </div>
+
+      <!-- Experience Tab -->
+      <div id="experience-tab" class="hidden">
+        <h3>Experience & Skills</h3>
+        <p>A breakdown of my technical skills and AI tool familiarity along with my years of experience.</p>
+        <div class="experience-table-container">
+          <table class="experience-table">
+            <thead>
+              <tr>
+                <th>Skill / Technology</th>
+                <th>Experience</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Python</td>
+                <td>1 year</td>
+              </tr>
+              <tr>
+                <td>Java</td>
+                <td>2 years</td>
+              </tr>
+              <tr>
+                <td>C++</td>
+                <td>1 year</td>
+              </tr>
+              <tr>
+                <td>HTML/CSS</td>
+                <td>2 years</td>
+              </tr>
+              <tr>
+                <td>ChatGPT</td>
+                <td>3 years</td>
+              </tr>
+              <tr>
+                <td>Claude AI</td>
+                <td>1 year</td>
+              </tr>
+              <tr>
+                <td>Gemini</td>
+                <td>2 years</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -274,6 +247,7 @@
       document.getElementById('projects-tab').classList.add('hidden');
       document.getElementById('research-tab').classList.add('hidden');
       document.getElementById('organizations-tab').classList.add('hidden');
+      document.getElementById('experience-tab').classList.add('hidden');
       document.getElementById(`${tab}-tab`).classList.remove('hidden');
       hideAllProjectDetails();
     }
