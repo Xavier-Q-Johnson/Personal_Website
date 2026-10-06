@@ -211,52 +211,59 @@
       <a href="https://www.linkedin.com/in/xavier-johnson-212751372/" target="_blank">LinkedIn</a>
       <a href="https://github.com/Xavier-Q-Johnson" target="_blank">GitHub</a>
     </div>
+
+    <!-- Contact Form Toggle Button -->
+    <button class="contact-btn" onclick="toggleContactForm()">Open Contact Form</button>
+
+    <!-- Contact Form (Hidden by default) -->
+    <div id="contactFormContainer" class="contact-form-container hidden">
+      <h3>Get in Touch</h3>
+      <form onsubmit="handleFormSubmit(event)">
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" name="firstName" required />
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" name="lastName" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+        <div class="form-group">
+          <label for="userRole">I am a(n):</label>
+          <select id="userRole" name="userRole" required>
+            <option value="" disabled selected>Select your role</option>
+            <option value="Employer">Employer</option>
+            <option value="Student">Student</option>
+            <option value="Professor">Professor</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Inquiry Type</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" name="inquiry" value="Job Opportunity" /> Job Opportunity
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="inquiry" value="Questions about the page/my work" /> Questions about the page/my work
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="inquiry" value="Resume questions" /> Resume questions
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="form-submit-btn">Send Message</button>
+      </form>
+    </div>
   </footer>
 
-  <script>
-    let currentPage = 'home';
-    let previousPage = '';
-
-    function showPage(pageId) {
-      document.getElementById(currentPage).classList.add('hidden');
-      hideAllProjectDetails();
-      document.getElementById(pageId).classList.remove('hidden');
-      previousPage = currentPage;
-      currentPage = pageId;
-    }
-
-    function goBack() {
-      if (previousPage) {
-        showPage(previousPage);
-      }
-    }
-
-    function showProjectDetail(projectNum) {
-      hideAllProjectDetails();
-      document.getElementById(`project-detail-${projectNum}`).classList.remove('hidden');
-    }
-
-    function hideAllProjectDetails() {
-      for (let i = 1; i <= 7; i++) {
-        const detail = document.getElementById(`project-detail-${i}`);
-        if (detail) detail.classList.add('hidden');
-      }
-    }
-
-    function showPortfolioTab(tab) {
-      document.getElementById('projects-tab').classList.add('hidden');
-      document.getElementById('research-tab').classList.add('hidden');
-      document.getElementById('organizations-tab').classList.add('hidden');
-      document.getElementById('experience-tab').classList.add('hidden');
-      document.getElementById(`${tab}-tab`).classList.remove('hidden');
-      hideAllProjectDetails();
-    }
-
-    function showResearchContent(tabId) {
-      const sections = document.querySelectorAll('.research-content');
-      sections.forEach(section => section.classList.add('hidden'));
-      document.getElementById(tabId).classList.remove('hidden');
-    }
-  </script>
+  <!-- Linked External JavaScript File -->
+  <script src="personal_portfolio.js"></script>
 </body>
 </html>
